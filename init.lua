@@ -59,9 +59,9 @@ require('lazy').setup('plugins')
 -- REMAP
 --
 
-vim.keymap.set('n', '<C-1>', vim.cmd.Lex);
-vim.keymap.set('n', '<leader>E', ':Lexplore %:p:h<CR>');
-vim.keymap.set('n', '<C-2>', ':Lexplore %:p:h<CR>');
+-- vim.keymap.set('n', '<C-1>', vim.cmd.Lex);
+-- vim.keymap.set('n', '<leader>E', ':Lexplore %:p:h<CR>');
+-- vim.keymap.set('n', '<C-2>', ':Lexplore %:p:h<CR>');
 
 -- window navigation
 vim.keymap.set('n', '<ca-Right>', '<CMD>wincmd l<CR>', { noremap = true });

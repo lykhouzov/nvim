@@ -28,4 +28,4 @@ require("nvim-tree").setup({
     on_attach = my_on_attach,
 })
 
-vim.keymap.set('n', '<A-1>', '<CMD>NvimTreeToggle<CR>', { noremap = true })
+vim.keymap.set('n', '<C-1>', '<CMD>NvimTreeToggle<CR>', { noremap = true })
