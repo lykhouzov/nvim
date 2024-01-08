@@ -37,7 +37,9 @@ local servers = {
             ["language_server_psalm.enabled"] = true,
             ["language_server_php_cs_fixer.enabled"] = true,
             ["php_code_sniffer.enabled"] = true,
-            ["prophecy.enabled"] = true
+            ["prophecy.enabled"] = true,
+            ["language_server_worse_reflection.inlay_hints.enable"] = true,
+            ["language_server_worse_reflection.inlay_hints.types"] = true
 
         }
     },
@@ -101,6 +103,18 @@ local on_attach = function(_, bufnr)
     vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
         vim.lsp.buf.format()
     end, { desc = 'Format current buffer with LSP' })
+
+    -- Inlay Hints
+    vim.api.nvim_create_autocmd("LspAttach", {
+        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+        callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            if client.server_capabilities.inlayHintProvider then
+                vim.lsp.inlay_hint.enable(args.buf, true)
+            end
+            -- whatever other lsp config you want
+        end
+    })
 end
 
 mason_lspconfig.setup_handlers {
