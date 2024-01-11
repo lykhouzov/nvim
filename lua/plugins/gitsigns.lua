@@ -5,7 +5,7 @@ return {
         -- See `:help gitsigns.txt`
         current_line_blame = true,
         numhl              = true, -- Toggle with `:Gitsigns toggle_numhl`
-        linehl             = true,
+        linehl             = false,
         signs              = {
             add = { text = '+' },
             change = { text = '~' },

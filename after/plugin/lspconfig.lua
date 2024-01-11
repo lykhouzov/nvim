@@ -105,16 +105,17 @@ local on_attach = function(_, bufnr)
     end, { desc = 'Format current buffer with LSP' })
 
     -- Inlay Hints
-    vim.api.nvim_create_autocmd("LspAttach", {
-        group = vim.api.nvim_create_augroup("UserLspConfig", {}),
-        callback = function(args)
-            local client = vim.lsp.get_client_by_id(args.data.client_id)
-            if client.server_capabilities.inlayHintProvider then
-                vim.lsp.inlay_hint.enable(args.buf, true)
-            end
-            -- whatever other lsp config you want
-        end
-    })
+    vim.api.nvim_buf_create_user_command(bufnr, 'InlayHintEnable', function(_)
+                vim.lsp.inlay_hint.enable(bufnr, true)
+    end, { desc = 'Enable InlayHints' })
+    vim.api.nvim_buf_create_user_command(bufnr, 'InlayHintDisable', function(_)
+                vim.lsp.inlay_hint.enable(bufnr, false)
+    end, { desc = 'Disable InlayHints' })
+    vim.api.nvim_buf_create_user_command(bufnr, 'InlayHintToggle', function(_)
+                vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
+    end, { desc = 'Disable InlayHints' })
+    nmap('<A-h>', "<CMD>InlayHintToggle<CR>", '[I]nlay [H]int [T]oggle')
+
 end
 
 mason_lspconfig.setup_handlers {
