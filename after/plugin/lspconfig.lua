@@ -13,8 +13,9 @@ require('mason-lspconfig').setup()
 --  define the property 'filetypes' to the map in question.
 local servers = {
     -- clangd = {},
-    -- gopls = {},
-    -- pyright = {},
+    gopls = {},
+    pyright = {
+    },
     rust_analyzer = {
         diagnostics = {
             enable = true,
@@ -31,18 +32,18 @@ local servers = {
             telemetry = { enable = false },
         },
     },
-    phpactor = {
-        init_options = {
-            ["language_server_phpstan.enabled"] = true,
-            ["language_server_psalm.enabled"] = true,
-            ["language_server_php_cs_fixer.enabled"] = true,
-            ["php_code_sniffer.enabled"] = true,
-            ["prophecy.enabled"] = true,
-            ["language_server_worse_reflection.inlay_hints.enable"] = true,
-            ["language_server_worse_reflection.inlay_hints.types"] = true
+    --phpactor = {
+    --    init_options = {
+    --        ["language_server_phpstan.enabled"] = true,
+    --        ["language_server_psalm.enabled"] = true,
+    --        ["language_server_php_cs_fixer.enabled"] = true,
+    --        ["php_code_sniffer.enabled"] = true,
+    --        ["prophecy.enabled"] = true,
+    --        ["language_server_worse_reflection.inlay_hints.enable"] = true,
+    --        ["language_server_worse_reflection.inlay_hints.types"] = true
 
-        }
-    },
+    --    }
+    --},
 }
 
 -- Setup neovim lua configuration
@@ -106,17 +107,30 @@ local on_attach = function(_, bufnr)
 
     -- Inlay Hints
     vim.api.nvim_buf_create_user_command(bufnr, 'InlayHintEnable', function(_)
-                vim.lsp.inlay_hint.enable(bufnr, true)
+        vim.lsp.inlay_hint.enable(bufnr, true)
     end, { desc = 'Enable InlayHints' })
     vim.api.nvim_buf_create_user_command(bufnr, 'InlayHintDisable', function(_)
-                vim.lsp.inlay_hint.enable(bufnr, false)
+        vim.lsp.inlay_hint.enable(bufnr, false)
     end, { desc = 'Disable InlayHints' })
     vim.api.nvim_buf_create_user_command(bufnr, 'InlayHintToggle', function(_)
-                vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
+        vim.lsp.inlay_hint.enable(bufnr, not vim.lsp.inlay_hint.is_enabled(bufnr))
     end, { desc = 'Disable InlayHints' })
     nmap('<A-h>', "<CMD>InlayHintToggle<CR>", '[I]nlay [H]int [T]oggle')
-
 end
+
+local lspconfig = require 'lspconfig'
+local configs = require 'lspconfig.configs'
+
+if not configs.php_ls then
+    configs.php_ls = {
+        default_config = {
+            cmd = { '/home/eksandral/projects/php-ls/target/debug/server' },
+            root_dir = lspconfig.util.root_pattern('.git'),
+            filetypes = { 'php' },
+        },
+    }
+end
+lspconfig.php_ls.setup {}
 
 mason_lspconfig.setup_handlers {
     function(server_name)
@@ -175,3 +189,29 @@ cmp.setup {
         { name = 'luasnip' },
     },
 }
+
+
+
+vim.api.nvim_create_user_command('StartMyLsp', function(_)
+    -- local capabilities = vim.lsp.protocol.make_client_capabilities()
+    vim.lsp.start_client({
+        name = 'php-ls',
+        filetypes = { 'php' },
+        cmd = { '/home/eksandral/projects/php-ls/target/debug/server' },
+        root_dir = vim.fs.dirname(vim.fs.find({ 'composer.json', 'index.php' }, { upward = true })[1]),
+        capabilities = capabilities,
+        settings = {},
+        on_attach = on_attach,
+        autostart = true,
+    })
+end, { desc = 'Start custom Lang Server' })
+vim.api.nvim_create_user_command('StopAllLsp', function(_)
+    vim.lsp.stop_client(vim.lsp.get_clients())
+end, { desc = 'Stop All servers' })
+
+
+--   require("php-ls").setup({
+--
+--       root_dir = vim.fs.dirname(vim.fs.find({ 'composer.json', 'index.php' }, { upward = true })[1]),
+--       capabilities = capabilities,
+--   })

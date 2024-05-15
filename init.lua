@@ -19,6 +19,8 @@ vim.o.termguicolors = true
 -- Show line number on cursor line and relative numbers up and down
 vim.wo.number = true
 vim.wo.relativenumber = true
+-- vim.opt.scrolloff = 999
+vim.opt.cursorline = true
 
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
@@ -32,7 +34,7 @@ vim.opt.incsearch = true
 
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
-vim.opt.colorcolumn = "120"
+vim.opt.colorcolumn = "100"
 
 -- Nvim-Tree is required this
 vim.g.loaded_netrw = 1
@@ -58,6 +60,12 @@ require('lazy').setup('plugins')
 --
 -- REMAP
 --
+
+-- COPY
+vim.keymap.set('v', '<leader>C', '"+y', { noremap = true });
+
+
+
 
 -- vim.keymap.set('n', '<C-1>', vim.cmd.Lex);
 -- vim.keymap.set('n', '<leader>E', ':Lexplore %:p:h<CR>');
